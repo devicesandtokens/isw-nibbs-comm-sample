@@ -2,15 +2,10 @@ package com.interswitchng.smartpos.shared.models.transaction
 
 import android.os.Parcelable
 import com.example.models.core.TerminalInfo
+import com.example.models.transaction.PaymentType
 import com.interswitchng.smartpos.shared.models.core.TransactionType
-import com.interswitchng.smartpos.shared.models.printer.info.TransactionInfo
-import com.interswitchng.smartpos.shared.models.printer.info.TransactionStatus
-import com.interswitchng.smartpos.shared.models.printer.slips.CardSlip
-import com.interswitchng.smartpos.shared.models.printer.slips.CashSlip
-import com.interswitchng.smartpos.shared.models.printer.slips.TransactionSlip
-import com.interswitchng.smartpos.shared.models.printer.slips.UssdQrTransferSlip
 import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.CardType
-import com.interswitchng.smartpos.shared.services.utils.IsoUtils
+import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.request.TransactionInfo
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -60,73 +55,4 @@ data class TransactionResultData(
     val transactionRemark: String? = ""
 ) : Parcelable {
 
-    private var _isSuccessfulOverride: Boolean? = null
-
-    var isSuccessful: Boolean
-        get() = _isSuccessfulOverride ?: (responseCode == IsoUtils.OK)
-        set(value) {
-            _isSuccessfulOverride = value
-        }
-
-    fun getSlip(terminal: TerminalInfo): TransactionSlip {
-        return when (paymentType) {
-            PaymentType.USSD, PaymentType.QR, PaymentType.Transfer, PaymentType.Web, PaymentType.Options -> UssdQrTransferSlip(
-                terminal,
-                getTransactionStatus(),
-                getTransactionInfo()
-            )
-            PaymentType.Card, PaymentType.PayCode, PaymentType.ThankYouCash, PaymentType.CNP -> CardSlip(
-                terminal,
-                getTransactionStatus(),
-                getTransactionInfo()
-            )
-            PaymentType.Cash -> CashSlip(
-                terminal,
-                getTransactionStatus(),
-                getTransactionInfo()
-            )
-        }
-    }
-
-    /// function to extract
-    /// print slip transaction info
-    fun getTransactionInfo() = TransactionInfo(
-        paymentType = paymentType,
-        stan = stan,
-        dateTime = dateTime,
-        amount = amount,
-        type = type,
-        cardPan = cardPan,
-        cardType = cardType.name,
-        cardExpiry = cardExpiry,
-        authorizationCode = authorizationCode,
-        pinStatus = pinStatus,
-        responseCode = responseCode,
-        transactionId = transactionId,
-        cardHolderName = cardHolderName,
-        remoteResponseCode = remoteResponseCode,
-        biller = biller,
-        customerDescription = customerDescription,
-        surcharge = surcharge,
-        additionalAmounts = additionalAmounts,
-        customerName = customerName ?: "",
-        ref = ref ?: "",
-        accountNumber = accountNumber ?: "",
-        transactionCurrencyType = transactionCurrencyType,
-        rrn = rrn,
-        route = route,
-        uniqueRef = uniqueReference ?: "",
-        transactionRemark = transactionRemark ?: ""
-    )
-
-    /// function to extract
-    /// print slip transaction status
-    fun getTransactionStatus() = TransactionStatus(
-        responseMessage = responseMessage,
-        responseCode = responseCode,
-        AID = AID,
-        telephone = telephone,
-        stan = stan,
-        rrn = rrn
-    )
 }

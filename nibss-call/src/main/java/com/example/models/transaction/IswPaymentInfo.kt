@@ -10,7 +10,7 @@ import java.util.Locale
  * triggered by external source that depends the SDK
  */
 @Parcelize
-internal data class IswPaymentInfo(
+data class IswPaymentInfo(
     val amount: Long,
     val currentStan: String,
     val rrn: String,

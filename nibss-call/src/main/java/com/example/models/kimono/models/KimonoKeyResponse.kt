@@ -1,4 +1,4 @@
-package com.interswitchng.smartpos.shared.services.kimono.models
+package com.example.models.kimono.models
 
 import org.simpleframework.xml.*
 

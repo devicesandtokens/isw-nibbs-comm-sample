@@ -1,4 +1,4 @@
-package com.interswitchng.smartpos.shared.services.utils
+package com.example.utils
 
 import java.text.SimpleDateFormat
 import java.util.*

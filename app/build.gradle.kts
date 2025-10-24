@@ -8,6 +8,7 @@ android {
     namespace = "com.example.nibss_sdk"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "com.example.nibss_sdk"
         minSdk = 24
@@ -38,6 +39,7 @@ android {
 
 dependencies {
     implementation(project(":nibss-call"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.10")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -47,4 +49,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     api(libs.retrofit.converter.gson)
+    implementation("com.pixplicity.easyprefs:EasyPrefs:1.10.0")
 }

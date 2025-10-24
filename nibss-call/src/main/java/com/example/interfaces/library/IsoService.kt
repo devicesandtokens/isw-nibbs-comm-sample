@@ -11,7 +11,7 @@ import com.example.models.billpayment.InquiryResponse
  * This interface provides operations that target the ISO-8385 message specification,
  * it provides functionality operations that require the ISO layer's method for communication.
  */
-internal interface IsoService {
+interface IsoService {
 
     /**
      * Uses the provided terminalId to perform key exchange with the EPMS server

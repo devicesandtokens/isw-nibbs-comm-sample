@@ -1,8 +1,8 @@
-package com.interswitchng.smartpos.shared.models.transaction.cardpaycode
+package com.example.models.transaction.cardpaycode
 
+import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.CardType
+import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.EmvResult
 import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.request.EmvData
-import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.request.IccData
-import com.interswitchng.smartpos.shared.models.CandidateAID
 import java.util.ArrayList
 
 
@@ -109,8 +109,6 @@ sealed class EmvMessage {
     /**
      * Indicates when to choose an application
      */
-    class ChooseApplication(val values: ArrayList<CandidateAID?>): EmvMessage()
-
 
     class AppSelected(val app: Int): EmvMessage()
 

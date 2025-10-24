@@ -5,7 +5,7 @@ package com.interswitchng.smartpos.shared.models.transaction.cardpaycode.request
  * type of transactions issued out
  * to the EPMS through ISO message format
  */
-internal enum class PurchaseType {
+enum class PurchaseType {
     PayCode,
     Card,
     Cash,
@@ -17,7 +17,7 @@ internal enum class PurchaseType {
  * This enum type identifies the
  * different Bank Account types
  */
-internal enum class AccountType(val value: String) {
+enum class AccountType(val value: String) {
     Default("00"),
     Savings("10"),
     Current("20"),

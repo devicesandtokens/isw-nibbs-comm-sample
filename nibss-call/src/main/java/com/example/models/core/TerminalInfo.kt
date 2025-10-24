@@ -1,8 +1,11 @@
 package com.example.models.core
 
+import android.os.Parcel
 import android.os.Parcelable
 import com.example.Constants
+import com.google.gson.Gson
 import com.interswitchng.smartpos.shared.interfaces.library.KeyValueStore
+import kotlinx.android.parcel.Parcelize
 
 
 /**
@@ -91,6 +94,12 @@ data class TerminalInfo(
 
         return result
     }
+
+    override fun describeContents(): Int {
+        TODO("Not yet implemented")
+    }
+
+
 
     companion object {
 

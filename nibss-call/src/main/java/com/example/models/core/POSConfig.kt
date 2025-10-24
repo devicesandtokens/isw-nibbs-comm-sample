@@ -1,9 +1,7 @@
 package com.interswitchng.smartpos.shared.models.core
 
 import com.google.gson.Gson
-import com.interswitchng.smartpos.shared.Constants
 import com.interswitchng.smartpos.shared.interfaces.library.KeyValueStore
-import com.interswitchng.smartpos.shared.interfaces.library.UsbConnector
 
 
 /**
@@ -18,13 +16,8 @@ data class POSConfig(
         internal val environment: Environment = Environment.Production,
         internal val appVersion: String?) {
 
-    internal var usbConnector: UsbConnector? = null
     internal var purchaseConfig = PurchaseConfig(10, "tech@isw.dev.ng", IswLocal.NIGERIA)
 
-    fun with(usb: UsbConnector): POSConfig {
-        usbConnector = usb
-        return this
-    }
 
     fun withPurchaseConfig(config: PurchaseConfig): POSConfig {
         purchaseConfig = config

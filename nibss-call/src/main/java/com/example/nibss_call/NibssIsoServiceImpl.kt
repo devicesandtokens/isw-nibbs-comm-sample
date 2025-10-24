@@ -5,6 +5,7 @@ import com.example.Constants
 import com.example.Constants.KEY_MASTER_KEY
 import com.example.Constants.KEY_PIN_KEY
 import com.example.Constants.KEY_SESSION_KEY
+import com.example.interfaces.IsoServiceListener
 import com.example.interfaces.device.POSDevice
 import com.example.interfaces.library.IsoService
 import com.example.models.billpayment.InquiryResponse
@@ -19,11 +20,11 @@ import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.CardType
 import com.interswitchng.smartpos.shared.models.transaction.cardpaycode.request.TransactionInfo
 import com.example.models.transaction.cardpaycode.response.TransactionResponse
 import com.example.utils.CardTypeUtils
-import com.interswitchng.smartpos.shared.services.utils.DateUtils.dateFormatter
-import com.interswitchng.smartpos.shared.services.utils.DateUtils.monthFormatter
-import com.interswitchng.smartpos.shared.services.utils.DateUtils.timeAndDateFormatter
-import com.interswitchng.smartpos.shared.services.utils.DateUtils.timeFormatter
-import com.interswitchng.smartpos.shared.services.utils.DateUtils.yearAndMonthFormatter
+import com.example.utils.DateUtils.dateFormatter
+import com.example.utils.DateUtils.monthFormatter
+import com.example.utils.DateUtils.timeAndDateFormatter
+import com.example.utils.DateUtils.timeFormatter
+import com.example.utils.DateUtils.yearAndMonthFormatter
 import com.example.utils.IsoUtils
 import com.example.utils.IsoUtils.TIMEOUT_CODE
 import com.example.utils.IsoUtils.generatePan
@@ -48,8 +49,10 @@ internal class NibssIsoServiceImpl(
     private val context: Context,
     private val store: KeyValueStore,
     private val socket: IsoSocket,
+    private val listener: IsoServiceListener? = null,
     private val posDevice: POSDevice? = null,
-) : IsoService {
+
+    ) : IsoService {
 
     private val logger by lazy { Logger.with("IsoServiceImpl") }
     private val messageFactory by lazy {
@@ -78,6 +81,9 @@ internal class NibssIsoServiceImpl(
         code: String,
         key: String
     ): String? {
+        val operation = "downloadTerminalParameters"
+        listener?.onStart(operation)
+
         try {
 
             val now = Date()
@@ -128,15 +134,15 @@ internal class NibssIsoServiceImpl(
 
             return decryptedKey
         } catch (e: UnsupportedEncodingException) {
-            
+            listener?.onError(operation, e.localizedMessage ?: "Failed to download terminal parameters", e)
             logger.logErr(
                 e.localizedMessage ?: "UnsupportedEncodingException occurred in downloading keys"
             )
         } catch (e: ParseException) {
-            
+            listener?.onError(operation, e.localizedMessage ?: "Failed to download terminal parameters", e)
             logger.logErr(e.localizedMessage ?: "ParseException occurred in downloading keys")
         } catch (e: java.lang.Exception) {
-            
+            listener?.onError(operation, e.localizedMessage ?: "Failed to download terminal parameters", e)
             logger.logErr(e.localizedMessage ?: "Exception occurred in downloading keys")
         }
 

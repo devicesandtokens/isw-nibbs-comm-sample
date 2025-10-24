@@ -6,7 +6,7 @@ package com.interswitchng.smartpos.shared.interfaces.library
  * from the server
  *
  */
-internal interface IsoSocket {
+interface IsoSocket {
 
 
     /**

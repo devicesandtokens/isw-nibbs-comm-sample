@@ -1,7 +1,7 @@
-package com.interswitchng.smartpos.shared.services.kimono.models
+package com.example.models.kimono.models
 
 import com.example.models.core.TerminalInfo
-import com.interswitchng.smartpos.shared.services.utils.DateUtils
+import com.example.utils.DateUtils
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 import java.util.*

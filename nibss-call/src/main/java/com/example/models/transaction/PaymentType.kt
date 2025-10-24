@@ -1,6 +1,5 @@
-package com.interswitchng.smartpos.shared.models.transaction
+package com.example.models.transaction
 
-import com.example.isw_smart_till.enums.TillPaymentOptions
 
 
 //import com.isw_smart_bluetooth.enums.TillPaymentOptions
@@ -28,7 +27,7 @@ enum class PaymentType {
             else -> super.toString()
         }
 
-        return string.toUpperCase()
+        return string.uppercase()
     }
 
     companion object {
@@ -44,18 +43,6 @@ enum class PaymentType {
                 "CNP" -> CNP
                 "QR Code" -> QR
                 else -> Options
-            }
-        }
-
-        fun fromTillPaymentType(type: TillPaymentOptions): PaymentType {
-            return when(type) {
-                TillPaymentOptions.CARD -> Card
-                TillPaymentOptions.PAYCODE -> PayCode
-                TillPaymentOptions.TRANSFER -> Transfer
-                TillPaymentOptions.QR -> QR
-                TillPaymentOptions.USSD -> USSD
-                TillPaymentOptions.CASH -> Cash
-                else -> Card
             }
         }
     }

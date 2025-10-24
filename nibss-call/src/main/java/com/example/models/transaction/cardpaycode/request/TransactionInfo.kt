@@ -7,7 +7,7 @@ import com.interswitchng.smartpos.shared.models.transaction.IswPaymentInfo
  * This class captures transaction request information to be issued
  * out to the EPMS for [PurchaseType] Transactions
  */
-internal data class TransactionInfo(
+data class TransactionInfo(
         val cardExpiry: String,
         val cardPIN: String,
         val cardPAN: String,

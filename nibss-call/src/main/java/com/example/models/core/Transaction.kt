@@ -1,7 +1,7 @@
 package com.interswitchng.smartpos.shared.models.core
 
 import android.content.Intent
-import com.interswitchng.smartpos.shared.models.transaction.PaymentType
+import com.example.models.transaction.PaymentType
 
 sealed class Transaction {
 
