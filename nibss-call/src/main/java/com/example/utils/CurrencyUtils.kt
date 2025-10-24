@@ -1,0 +1,55 @@
+package com.interswitchng.smartpos.shared.utilities
+
+import com.interswitchng.smartpos.IswPos
+import com.interswitchng.smartpos.shared.models.core.IswLocal
+import com.interswitchng.smartpos.shared.models.transaction.TransactionCurrencyType
+import java.util.*
+
+
+internal object CurrencyUtils {
+    private val currencyLocaleMap: SortedMap<Currency, Locale>
+
+    private val locale = mapOf(
+            "936" to "GHS",
+            "566" to "NGN",
+            "710" to "ZAR"
+    )
+
+    init {
+        currencyLocaleMap = TreeMap(Comparator<Currency> { c1, c2 -> c1.currencyCode.compareTo(c2.currencyCode) })
+        for (locale in Locale.getAvailableLocales()) {
+            try {
+                val currency = Currency.getInstance(locale)
+                currencyLocaleMap[currency] = locale
+            } catch (e: Exception) { }
+        }
+    }
+
+    fun getFormattedAmount(currencyType: TransactionCurrencyType = TransactionCurrencyType.NAIRA, amount: String): String {
+        val currency = when(currencyType) {
+            TransactionCurrencyType.DOLLAR -> IswLocal.USA.currency
+            else -> IswLocal.NIGERIA.currency
+        }
+
+        val formattedAmount = DisplayUtils.getAmountString(amount.toLong())
+        return "$currency $formattedAmount"
+    }
+
+    fun isDollarTransaction(): Boolean {
+        return IswPos.getInstance().getLatestTransactionCurrency() == TransactionCurrencyType.DOLLAR
+    }
+
+    fun getCurrencyTypeFromCode(currencyCode: String?): TransactionCurrencyType {
+        return when(currencyCode) {
+            "840" -> TransactionCurrencyType.DOLLAR
+            else -> TransactionCurrencyType.NAIRA
+        }
+    }
+
+    fun getCurrencySymbol(currencyCode: String): String {
+        return this.locale[currencyCode]?.let {
+            val currency = Currency.getInstance(it)
+            return currency.getSymbol(currencyLocaleMap[currency])
+        } ?: ""
+    }
+}
