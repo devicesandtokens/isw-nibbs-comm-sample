@@ -54,6 +54,10 @@ internal class NibssIsoServiceImpl(
 
     ) : IsoService {
 
+    fun getCurrentTerminalInfo(): TerminalInfo? {
+        return TerminalInfo.get(store)
+    }
+
     private val logger by lazy { Logger.with("IsoServiceImpl") }
     private val messageFactory by lazy {
         try {
@@ -75,7 +79,7 @@ internal class NibssIsoServiceImpl(
     }
 
     private fun makeKeyCall(
-        terminalInfo: TerminalInfo,
+        terminalId: String,
         ip: String,
         port: Int,
         code: String,
@@ -96,7 +100,7 @@ internal class NibssIsoServiceImpl(
                 .setValue(11, stan)
                 .setValue(12, timeFormatter.format(now))
                 .setValue(13, monthFormatter.format(now))
-                .setValue(41, terminalInfo.terminalId)
+                .setValue(41, terminalId)
                 //.setValue(59, "SMARTPOS|$code|${terminalInfo.tmsRouteType}")
 //            if (!isSSLContext() || terminalInfo.tmsRouteType != CMS.UPSL.name) {
 //                message.message.removeFields(59)
@@ -110,8 +114,11 @@ internal class NibssIsoServiceImpl(
             // set server Ip and port
             socket.setIpAndPort(ip, port)
 
+            println("Socket port set to $ip $port")
+
             // open to socket endpoint
-            socket.open()
+            val socketOpened = socket.open()
+            println("Socket opened $socketOpened")
 
             val request = message.message.writeData()
             logger.log("Key Xch Request HEX ---> ${IsoUtils.bytesToHex(request)}")
@@ -132,6 +139,8 @@ internal class NibssIsoServiceImpl(
             val encryptedKey = msg.message.getField<String>(SRCI)
             val decryptedKey = TripleDES.soften(key, encryptedKey.value)
 
+            println(decryptedKey)
+
             return decryptedKey
         } catch (e: UnsupportedEncodingException) {
             listener?.onError(operation, e.localizedMessage ?: "Failed to download terminal parameters", e)
@@ -143,7 +152,8 @@ internal class NibssIsoServiceImpl(
             logger.logErr(e.localizedMessage ?: "ParseException occurred in downloading keys")
         } catch (e: java.lang.Exception) {
             listener?.onError(operation, e.localizedMessage ?: "Failed to download terminal parameters", e)
-            logger.logErr(e.localizedMessage ?: "Exception occurred in downloading keys")
+            e.printStackTrace()
+            logger.logErr(e.localizedMessage ?: "Exception occurred in downloading keys mmm")
         }
 
         return null
@@ -153,33 +163,28 @@ internal class NibssIsoServiceImpl(
         return "000001"
     }
 
-    override fun downloadKey(terminalInfo: TerminalInfo, ip: String, port: Int): Boolean {
-        val cms = when (terminalInfo.tmsRouteType) {
-            "NIBSS_NUS" -> CMS.NUS
-            "UPSL" -> CMS.UPSL
-            else -> CMS.CTMS
-        }
+    override fun downloadKey(terminalId: String, ip: String, port: Int): Boolean {
 
         val key = KeysUtils.testCMS(CMS.NUS)
 
         // println("cms_key: $key")
         // download and save encrypted master key
         // this will also load the master key into the POS terminal
-        val isDownloaded = makeKeyCall(terminalInfo, ip, port, "9A0000", key)?.let { masterKey ->
+        val isDownloaded = makeKeyCall(terminalId, ip, port, "9A0000", key)?.let { masterKey ->
             store.saveString(KEY_MASTER_KEY, masterKey)
             // load master key into pos
 //            posDevice.loadMasterKey(masterKey)
 
             // getResult session key & save
             val isSessionSaved =
-                makeKeyCall(terminalInfo, ip, port, "9B0000", masterKey)?.let { sessionKey ->
+                makeKeyCall(terminalId, ip, port, "9B0000", masterKey)?.let { sessionKey ->
                     store.saveString(KEY_SESSION_KEY, sessionKey)
                     true
                 }
 
             // getResult pin key & save
             val isPinSaved =
-                makeKeyCall(terminalInfo, ip, port, "9G0000", masterKey)?.let { pinKey ->
+                makeKeyCall(terminalId, ip, port, "9G0000", masterKey)?.let { pinKey ->
                     store.saveString(KEY_PIN_KEY, pinKey)
 
                     // load pin key into pos device
@@ -193,8 +198,9 @@ internal class NibssIsoServiceImpl(
         return isDownloaded == true
     }
 
+
     override fun downloadTerminalParameters(
-        terminalInfo: TerminalInfo,
+        terminalId: String,
         ip: String,
         port: Int
     ): Boolean {
@@ -212,7 +218,7 @@ internal class NibssIsoServiceImpl(
                 .setValue(11, stan)
                 .setValue(12, timeFormatter.format(now))
                 .setValue(13, monthFormatter.format(now))
-                .setValue(41, terminalInfo.terminalId)
+                .setValue(41, terminalId)
                 //.setValue(59, "SMARTPOS|$code|${terminalInfo.tmsRouteType}")
                 .setValue(62, field62)
 
@@ -262,7 +268,7 @@ internal class NibssIsoServiceImpl(
 
             // parse and save terminal info
             TerminalInfoParser.parse(
-                terminalInfo.terminalId,
+                terminalId,
                 ip,
                 port,
                 terminalDataString,
@@ -272,7 +278,7 @@ internal class NibssIsoServiceImpl(
 
             return true
         } catch (e: Exception) {
-            
+
             logger.log(
                 e.localizedMessage ?: "Exception occurred performing download terminal parameters"
             )
@@ -1435,6 +1441,8 @@ internal class NibssIsoServiceImpl(
     }
 
 
+
+
     private fun reversePurchase(
         txnMessage: NibssIsoMessage,
         prevTime: Long,
@@ -1571,6 +1579,8 @@ internal class NibssIsoServiceImpl(
 
     companion object {
         private const val SRCI = 53
+
+
     }
 
 }

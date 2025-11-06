@@ -3,6 +3,7 @@ package com.example.nibss_sdk
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -11,72 +12,105 @@ import com.example.interfaces.IsoServiceListener
 import com.example.interfaces.library.IsoService
 import com.example.models.NibssConfig
 import com.example.models.core.TerminalInfo
+import com.example.nibss_sdk.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.log
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var isoService: IsoService
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity(), IsoServiceListener {
+    private val viewModel: MainViewModel by viewModels()
+    private val terminalId = "2011E138"
+    private val ip = "196.45.10.10"
+    private val port = 5000
+
+    private lateinit var binding: ActivityMainBinding
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        // 1️⃣ Attach the listener to ViewModel
+        viewModel.initiate(this)
 
-        // 1️⃣ Initialize dependencies
-        val keyValueStore = KeyValueStoreImpl()
-
-        // 2️⃣ Create listener
-        val listener = object : IsoServiceListener {
-            override fun onStart(operation: String) {
-                Log.d("ISO", "Started: $operation")
-            }
-
-            override fun onSuccess(operation: String, data: Any?) {
-                Log.d("ISO", "Success: $operation - $data")
-            }
-
-            override fun onError(operation: String, message: String, throwable: Throwable?) {
-                Log.e("ISO", "Error: $operation - $message", throwable)
-            }
-
-            override fun onComplete(operation: String) {
-                Log.d("ISO", "$operation complete")
+        // 2️⃣ Observe responses
+        viewModel.keyDownloadResponse.observe(this) { success ->
+            if (success) {
+                Log.d("ISO", "Key download successful ✅")
+                // Continue to download parameters
+            } else {
+                Log.e("ISO", "Key download failed ❌")
             }
         }
 
-        val ip = "196.45.10.10"
-        val port = 5000
+        setupUi()
 
-        // 3️⃣ Build the service from factory
-        isoService = IsoServiceFactory.createNIBSS(
-            context = this,
-            store = keyValueStore,
-            nibssConfig = NibssConfig(ip = ip, port = port),
-            listener = listener
-        )
+        // 3️⃣ Trigger key download
 
-        // 4️⃣ Kick off operations (on a background thread)
-        runKeyDownload()
     }
 
-    private fun runKeyDownload() {
-        Thread {
-            try {
-                val terminalInfo = TerminalInfo(
-                    terminalId = "12345678",
-                    tmsRouteType = "NIBSS_NUS"
-                )
+    private fun setupUi() {
+        println("Setting up UI")
+        binding.cardKeyDownload.setOnClickListener {
+            // Handle key download
+            println("I want to download key")
+            viewModel.downloadKey(terminalId, ip, port)
+        }
 
-                val ip = "196.45.10.10"
-                val port = 5000
+        binding.cardParamDownload.setOnClickListener {
+            // Handle parameter download
+        }
 
-                val success = isoService.downloadKey(terminalInfo, ip, port)
-                Log.d("ISO", "Download Key Result: $success")
+        binding.cardTestPurchase.setOnClickListener {
+            // Handle test purchase
+        }
 
-                if (success) {
-                    val paramSuccess = isoService.downloadTerminalParameters(terminalInfo, ip, port)
-                    Log.d("ISO", "Download Params Result: $paramSuccess")
-                }
-            } catch (e: Exception) {
-                Log.e("ISO", "Exception in key download", e)
-            }
-        }.start()
+        binding.cardTestPurchaseCashback.setOnClickListener {
+            // Handle test purchase cashback
+        }
+
+        binding.cardTestRefund.setOnClickListener {
+            // Handle refund
+        }
+
+        binding.cardTestBalance.setOnClickListener {
+            // Handle balance enquiry
+        }
+
+        binding.cardTestCashAdvance.setOnClickListener {
+            // Handle cash advance
+        }
+
+        binding.cardTestPreAuth.setOnClickListener {
+            // Handle pre-auth
+        }
+
+        binding.cardTestSalesCompletion.setOnClickListener {
+            // Handle sales completion
+        }
     }
+
+    override fun onStart(operation: String) {
+        println("I have started listening to the operation: $operation")
+    }
+
+    override fun onSuccess(operation: String, data: Any?) {
+
+    }
+
+    override fun onError(
+        operation: String,
+        message: String,
+        throwable: Throwable?
+    ) {
+
+    }
+
+    override fun onComplete(operation: String) {
+
+    }
+
+
 }

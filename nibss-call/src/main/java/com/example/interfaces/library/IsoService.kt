@@ -21,9 +21,10 @@ interface IsoService {
      * @param port the port number for the ip address
      * @return     boolean expression indicating the success or failure status of the key exchange
      */
-    fun downloadKey(terminalInfo: TerminalInfo, ip: String, port: Int): Boolean {
+    fun downloadKey(terminalId: String, ip: String, port: Int): Boolean {
         return false
     }
+
 
     /**
      * Uses the provided terminalId to download the terminal information, like name and location.
@@ -34,9 +35,10 @@ interface IsoService {
      * @return  boolean expression indicating the success or failure of the terminal info download
      * @see TerminalInfo
      */
-    fun downloadTerminalParameters(terminalInfo: TerminalInfo, ip: String, port: Int): Boolean {
+    fun downloadTerminalParameters(terminalId: String, ip: String, port: Int): Boolean {
         return false
     }
+
 
     /**
      * Initiates a card transaction using the provided terminal and transaction info, and returns the

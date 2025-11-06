@@ -3,7 +3,9 @@ package com.example.nibss_sdk
 import android.app.Application
 import android.content.ContextWrapper
 import com.pixplicity.easyprefs.library.Prefs
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MainApplication: Application() {
 
     override fun onCreate() {
