@@ -20,8 +20,8 @@ import kotlin.math.log
 class MainActivity : AppCompatActivity(), IsoServiceListener {
     private val viewModel: MainViewModel by viewModels()
     private val terminalId = "2011E138"
-    private val ip = "196.45.10.10"
-    private val port = 5000
+    private val ip = "196.6.103.10"
+    private val port = 55533
 
     private lateinit var binding: ActivityMainBinding
 
@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity(), IsoServiceListener {
 
         binding.cardParamDownload.setOnClickListener {
             // Handle parameter download
+            viewModel.downloadParameter(terminalId, ip, port)
         }
 
         binding.cardTestPurchase.setOnClickListener {

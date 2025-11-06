@@ -39,5 +39,14 @@ class MainViewModel @Inject constructor(
     }
 
 
+    fun downloadParameter(terminalId: String, ip: String, port:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            println("downloading keys..........")
+            val result = isoService!!.downloadTerminalParameters(terminalId, ip, port)
+            _keyDownloadResponse.postValue(result)
+        }
+    }
+
+
 
 }
