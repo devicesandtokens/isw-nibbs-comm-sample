@@ -49,6 +49,25 @@ val nibssIsoService = IsoServiceFactory.createNIBSS(
 )
 ```
 
+# NIBSS SDK Integration Guide
+
+This guide explains how to integrate with the NIBSS ISO service provided in this SDK.
+
+**IMPORTANT:** The service is currently undergoing refactoring. The code as it stands has some issues that need to be resolved before it can be used in a production application. Specifically, the `NibssIsoServiceImpl` and its factory are not yet public, and its methods are synchronous, which will lead to runtime crashes on Android. The following guide describes the intended integration path once these issues are resolved.
+
+---
+
+## 0. Add the Library to Your Project
+
+### Option 1: GitHub Packages (requires authentication)
+
+1. Add credentials to `~/.gradle/gradle.properties`:
+
+```properties
+gpr.user=YOUR_GITHUB_USERNAME
+gpr.key=YOUR_PERSONAL_ACCESS_TOKEN
+
+
 ## 2. Using the Service
 
 Once you have an instance of `nibssIsoService`, you can call its methods. These methods are asynchronous. The results will be delivered to the `IsoServiceListener` you provided.
@@ -64,6 +83,29 @@ val terminalInfo = TerminalInfo(terminalId = "your_terminal_id") // provide your
 
 nibssIsoService.downloadKey(terminalInfo, nibssConfig.ip, nibssConfig.port)
 ```
+
+
+dependencyResolutionManagement {
+repositories {
+google()
+mavenCentral()
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/YOUR_GITHUB_USERNAME/YOUR_LIBRARY_REPO")
+            credentials {
+                username = findProperty("gpr.user") as String?
+                password = findProperty("gpr.key") as String?
+            }
+        }
+    }
+}
+
+
+dependencies {
+implementation("com.isw.devicesandtokens:isw-nibss-caller:1.0.0")
+}
+
 
 The result of this operation will be delivered to the `onSuccess` or `onError` methods of your `isoServiceListener`.
 

@@ -9,7 +9,16 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/devicesandtokens/NIBSS-COMMUNICATOR")
+            credentials {
+                username = findProperty("gpr.user") as String?
+                password = findProperty("gpr.key") as String?
+            }
+        }
     }
+
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -17,8 +26,10 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+
 }
+
+
 
 rootProject.name = "NIBSS_SDK"
 include(":app")
-include(":nibss-call")
