@@ -18,6 +18,7 @@ coroutines = "1.7.3"
 lifecycle = "2.8.4"
 activityKtx = "1.9.2"
 easyPrefs = "1.10.0"
+nibbsCaller = "1.0.0"
 
 
 
@@ -43,6 +44,7 @@ coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-androi
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 easy-prefs = { group = "com.pixplicity.easyprefs", name="EasyPrefs", version.ref="easyPrefs" }
+nibbs-caller = { group = "io.github.devicesandtokens", name="isw-nibss-caller", version.ref="nibbsCaller" }
 
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
 

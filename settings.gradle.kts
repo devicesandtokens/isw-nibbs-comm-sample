@@ -9,14 +9,6 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/devicesandtokens/NIBSS-COMMUNICATOR")
-            credentials {
-                username = findProperty("gpr.user") as String?
-                password = findProperty("gpr.key") as String?
-            }
-        }
     }
 
 }

@@ -44,7 +44,7 @@ android {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.10")
-    implementation("com.isw.devicesandtokens:isw-nibss-caller:1.0.0")
+    implementation(libs.nibbs.caller)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.coroutines.core)
